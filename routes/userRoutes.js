@@ -1,9 +1,8 @@
-const express = require("express");
-const { getUser } = require("../controllers/userControllers");
-import { admin, protect } from "../middleware/authMiddleware.js";
+import express from "express";
+import { authUser } from "../controllers/userControllers.js";
 
 const router = express.Router();
 
-router.route("/").get(getUser);
+router.route("/").post(authUser);
 
 export default router;
