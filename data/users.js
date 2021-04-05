@@ -1,21 +1,26 @@
+import bcrypt from "bcryptjs";
+
 const users = [
   {
-    fullName: "Octyo Paswa Putra",
+    fullname: "Octyo Paswa Putra",
     role: "Programmer",
     username: "lucifer",
-    password: "binary1010",
+    password: bcrypt.hashSync("binary1010", 10),
+    email: "octyo@example.com",
   },
   {
-    fullName: "John Doe",
+    fullname: "John Doe",
     role: "SQC",
     username: "john",
-    password: "123456",
+    password: bcrypt.hashSync("123456", 10),
+    email: "john@example.com",
   },
   {
-    fullName: "Jane Doe",
+    fullname: "Jane Doe",
     role: "Support",
     username: "jane",
-    password: "123456",
+    password: bcrypt.hashSync("binary1010", 10),
+    email: "jane@example.com",
   },
 ];
 
