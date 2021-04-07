@@ -158,6 +158,7 @@ export {
   registerUser,
   getUserProfile,
   updateUserProfile,
+  getUsers,
   deleteUser,
   getUserById,
 };

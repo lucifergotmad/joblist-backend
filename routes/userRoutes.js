@@ -7,11 +7,12 @@ import {
   updateUserProfile,
   deleteUser,
   getUserById,
+  getUsers,
 } from "../controllers/userControllers.js";
 
 const router = express.Router();
 
-router.route("/").post(registerUser);
+router.route("/").post(registerUser).get(protect, owner, getUsers);
 router.route("/login").post(authUser);
 router
   .route("/profile")
