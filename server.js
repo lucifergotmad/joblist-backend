@@ -17,6 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/users", userRoutes);
+app.use("/api/jobs", userRoutes);
 
 app.use(notFound);
 

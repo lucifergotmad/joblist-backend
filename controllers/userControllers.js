@@ -135,7 +135,7 @@ const deleteOwnAccount = AsyncHandler(async (req, res) => {
     @access Private/Admin
 */
 const getUsers = AsyncHandler(async (req, res) => {
-  const user = await User.find({});
+  const user = await User.find({}).where('role').ne("Owner");
   res.json(user);
 });
 
