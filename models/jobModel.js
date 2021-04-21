@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const jobSchema = mongoose.Schema({
   PIC: {
@@ -40,7 +40,7 @@ const jobSchema = mongoose.Schema({
       type: String,
       required: true,
     },
-    procceedAt: {
+    processedAt: {
       type: Date,
       required: true,
     },
@@ -54,8 +54,8 @@ const jobSchema = mongoose.Schema({
       ref: "User",
     },
   },
-});
+})
 
-const Job = mongoose.model("Job", jobSchema);
+const Job = mongoose.model("Job", jobSchema)
 
-export default Job;
+export default Job
