@@ -1,8 +1,14 @@
-import asyncHandler from "express-async-handler";
-import Job from "../models/jobModel.js";
+import asyncHandler from "express-async-handler"
+import Job from "../models/jobModel.js"
 
-/*  @desc   Add a new Jobs
-    @route  POST /api/jobs
-    @access Private
+/*  @desc   Get All Jobs
+    @route  GET /api/jobs
+    @access Private/Support & Owner
 */
-const addNewJob = AsyncHandler(async (req, res) => {});
+const getAllJobs = asyncHandler(async (req, res) => {
+  const jobs = await Job.find({}).populate("updatedBy", "fullname email")
+
+  res.json(jobs)
+})
+
+export { getAllJobs }
