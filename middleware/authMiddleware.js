@@ -44,4 +44,4 @@ const support = (req, res, next) => {
   }
 }
 
-export { protect, owner }
+export { protect, owner, support }

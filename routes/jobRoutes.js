@@ -1,9 +1,14 @@
 import express from "express"
-import { protect, owner } from "../middleware/authMiddleware.js"
-import { getAllJobs } from "../controllers/jobControllers.js"
+import {
+  createJob,
+  jobsDetail,
+  listJobs,
+} from "../controllers/jobControllers.js"
+import { protect, support } from "../middleware/authMiddleware.js"
 
 const router = express.Router()
 
-router.route("/").get(protect, owner, getAllJobs)
+router.route("/").post(protect, support, createJob).get(protect, listJobs)
+router.route("/:id").get(protect, jobsDetail)
 
 export default router
