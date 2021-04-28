@@ -1,33 +1,25 @@
 import mongoose from "mongoose"
 
-const programSchema = mongoose.Schema(
-  {
-    status: {
-      type: String,
-      required: true,
-      default: "NP",
-    },
-    information: {
-      type: String,
-    },
-    processAt: {
-      type: Date,
-      required: true,
-    },
-    doneAt: {
-      type: Date,
-      required: true,
-    },
-    QCBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "User",
-    },
+const programSchema = mongoose.Schema({
+  status: {
+    type: String,
+    required: true,
+    default: "WIP",
   },
-  {
-    timestamps: true,
-  }
-)
+  information: {
+    type: String,
+  },
+  processAt: {
+    type: Date,
+  },
+  doneAt: {
+    type: Date,
+  },
+  QCBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+})
 
 const jobSchema = mongoose.Schema({
   pic: {
@@ -37,6 +29,11 @@ const jobSchema = mongoose.Schema({
   inputAt: {
     type: Date,
     required: true,
+  },
+  inputBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
   },
   updatedAt: {
     type: Date,
