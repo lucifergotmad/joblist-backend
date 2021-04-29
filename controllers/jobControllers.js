@@ -17,9 +17,7 @@ const createJob = AsyncHandler(async (req, res) => {
     description,
   })
 
-  const program = {
-    status: "RTI",
-  }
+  const program = {}
 
   job.program = program
   const createdJob = await job.save()
@@ -91,17 +89,17 @@ const implementedJobs = AsyncHandler(async (req, res) => {
     @route  GET /api/jobs/:id
     @access Private
 */
-const jobsDetail = AsyncHandler(async (req, res) => {
-  const jobs = await Job.findById(req.params.id)
+const detailsJob = AsyncHandler(async (req, res) => {
+  const job = await Job.findById(req.params.id)
     .populate("updatedBy", "fullname email")
     .populate("inputBy", "fullname email")
     .populate("program.QCBy", "fullname email")
 
-  if (jobs) {
-    res.json(jobs)
+  if (job) {
+    res.json(job)
   } else {
     res.status(404)
-    throw new Error("Job is not found")
+    throw new Error("Job not found")
   }
 })
 
@@ -110,29 +108,70 @@ const jobsDetail = AsyncHandler(async (req, res) => {
     @access Private
 */
 const updateJobStatus = AsyncHandler(async (req, res) => {
-  const jobs = await Job.findById(req.params.id)
-
-  if (req.body && req.body.status) {
-    switch (req.body.status) {
+  const job = await Job.findById(req.params.id)
+  const { status } = req.body
+  if (job) {
+    switch (status) {
       case "WIP":
+        job.program.status = status
+        job.program.processAt = Date.now()
         break
       case "RQC":
+        job.program.status = status
+        job.program.doneAt = Date.now()
+        job.program.QCBy = req.user._id
         break
       case "RTI":
+        job.program.status = status
         break
       case "Implemented":
+        job.program.status = status
+        job.updatedAt = Date.now()
+        job.updatedBy = req.user._id
         break
       default:
+        res.status(404)
+        throw new Error("Invalid Status")
         break
     }
-  }
 
-  res.status(201).json(jobs)
+    const updatedJob = await job.save()
+    res.json(updatedJob)
+  } else {
+    res.status(404)
+    throw new Error("Job not found")
+  }
 })
 
 /*  @desc   Update Job
-    @route  PUT /api/jobs/:id/status
-    @access Private
+    @route  PUT /api/jobs/:id
+    @access Private/Support
 */
+const updateJob = AsyncHandler(async (req, res) => {
+  const job = await Job.findById(req.params.id)
+})
 
-export { createJob, listJobs, jobsDetail, implementedJobs }
+/*  @desc   Delete Job
+    @route  DELETE /api/jobs/:id
+    @access Private/Support
+*/
+const deleteJob = AsyncHandler(async (req, res) => {
+  const job = await Job.findById(req.params.id)
+
+  if (job) {
+    await job.remove()
+    res.json({ message: "Job removed" })
+  } else {
+    res.status(404)
+    throw new Error("Job not found")
+  }
+})
+
+export {
+  createJob,
+  listJobs,
+  detailsJob,
+  implementedJobs,
+  updateJobStatus,
+  deleteJob,
+}
