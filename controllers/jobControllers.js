@@ -17,7 +17,9 @@ const createJob = AsyncHandler(async (req, res) => {
     description,
   })
 
-  const program = {}
+  const program = {
+    processAt: Date.now(),
+  }
 
   job.program = program
   const createdJob = await job.save()
@@ -114,7 +116,6 @@ const updateJobStatus = AsyncHandler(async (req, res) => {
     switch (status) {
       case "WIP":
         job.program.status = status
-        job.program.processAt = Date.now()
         break
       case "RQC":
         job.program.status = status
@@ -149,6 +150,20 @@ const updateJobStatus = AsyncHandler(async (req, res) => {
 */
 const updateJob = AsyncHandler(async (req, res) => {
   const job = await Job.findById(req.params.id)
+  const { pic, customer, priority, kindOfChange, description } = req.body
+  if (job) {
+    job.pic = pic || job.pic
+    job.customer = customer || job.customer
+    job.priority = priority || job.priority
+    job.kindOfChange = kindOfChange || job.kindOfChange
+    job.description = description || job.description
+
+    const updatedJob = await job.save()
+    res.json(updatedJob)
+  } else {
+    res.status(404)
+    throw new Error("Job not found")
+  }
 })
 
 /*  @desc   Delete Job
@@ -173,5 +188,6 @@ export {
   detailsJob,
   implementedJobs,
   updateJobStatus,
+  updateJob,
   deleteJob,
 }
