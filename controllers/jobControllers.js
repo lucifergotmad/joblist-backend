@@ -96,7 +96,6 @@ const detailsJob = AsyncHandler(async (req, res) => {
     .populate("updatedBy", "fullname email")
     .populate("inputBy", "fullname email")
     .populate("program.QCBy", "fullname email")
-
   if (job) {
     res.json(job)
   } else {
@@ -146,17 +145,25 @@ const updateJobStatus = AsyncHandler(async (req, res) => {
 
 /*  @desc   Update Job
     @route  PUT /api/jobs/:id
-    @access Private/Support
+    @access Private
 */
 const updateJob = AsyncHandler(async (req, res) => {
   const job = await Job.findById(req.params.id)
-  const { pic, customer, priority, kindOfChange, description } = req.body
+  const {
+    pic,
+    customer,
+    priority,
+    kindOfChange,
+    description,
+    information,
+  } = req.body
   if (job) {
     job.pic = pic || job.pic
     job.customer = customer || job.customer
     job.priority = priority || job.priority
     job.kindOfChange = kindOfChange || job.kindOfChange
     job.description = description || job.description
+    job.program.information = information || job.program.information
 
     const updatedJob = await job.save()
     res.json(updatedJob)

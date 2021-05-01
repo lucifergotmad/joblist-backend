@@ -12,13 +12,13 @@ import { owner, protect, support } from "../middleware/authMiddleware.js"
 
 const router = express.Router()
 
+router.route("/implemented").get(protect, owner, implementedJobs)
 router.route("/").post(protect, support, createJob).get(protect, listJobs)
 router
   .route("/:id")
   .get(protect, detailsJob)
   .delete(protect, support, deleteJob)
-  .put(protect, support, updateJob)
+  .put(protect, updateJob)
 router.route("/status/:id").put(protect, updateJobStatus)
-router.route("/implemented").get(protect, owner, implementedJobs)
 
 export default router
