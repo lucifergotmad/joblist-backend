@@ -2,6 +2,7 @@ import express from "express"
 import {
   createJob,
   implementedJobs,
+  getAllJobs,
   listJobs,
   updateJobStatus,
   detailsJob,
@@ -13,6 +14,7 @@ import { owner, protect, support } from "../middleware/authMiddleware.js"
 const router = express.Router()
 
 router.route("/implemented").get(protect, owner, implementedJobs)
+router.route("/all").get(protect, support, getAllJobs)
 router.route("/").post(protect, support, createJob).get(protect, listJobs)
 router
   .route("/:id")

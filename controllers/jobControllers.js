@@ -32,33 +32,59 @@ const createJob = AsyncHandler(async (req, res) => {
 */
 const listJobs = AsyncHandler(async (req, res) => {
   const pageSize = 5
+  const keyword = req.query.keyword
+    ? {
+        customer: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {}
   const page = Number(req.query.pageNumber) || 1
   let count
   let jobs
   switch (req.user.role) {
     case "Support":
-      count = await Job.countDocuments({ "program.status": "RTI" })
-      jobs = await Job.find({ "program.status": "RTI" })
+      count = await Job.countDocuments({
+        $or: [{ "program.status": "RTI" }, { "program.status": "Implemented" }],
+        ...keyword,
+      })
+      jobs = await Job.find({
+        $or: [{ "program.status": "RTI" }, { "program.status": "Implemented" }],
+        ...keyword,
+      })
         .limit(pageSize)
         .skip(pageSize * (page - 1))
       break
     case "Programmer":
-      count = await Job.countDocuments({ "program.status": "WIP" })
-      jobs = await Job.find({ "program.status": "WIP" })
+      count = await Job.countDocuments({
+        $or: [{ "program.status": "WIP" }, { "program.status": "RQC" }],
+        ...keyword,
+      })
+      jobs = await Job.find({
+        $or: [{ "program.status": "WIP" }, { "program.status": "RQC" }],
+        ...keyword,
+      })
         .limit(pageSize)
         .skip(pageSize * (page - 1))
       break
     case "SQC":
-      count = await Job.countDocuments({ "program.status": "RQC" })
-      jobs = await Job.find({ "program.status": "RQC" })
+      count = await Job.countDocuments({
+        $or: [{ "program.status": "RQC" }, { "program.status": "RTI" }],
+        ...keyword,
+      })
+      jobs = await Job.find({
+        $or: [{ "program.status": "WIP" }, { "program.status": "RQC" }],
+        ...keyword,
+      })
         .limit(pageSize)
         .skip(pageSize * (page - 1))
       break
     case "Owner":
-      count = await Job.countDocuments({})
+      count = await Job.countDocuments({ ...keyword })
         .where("program.status")
         .ne("Implemented")
-      jobs = await Job.find({})
+      jobs = await Job.find({ ...keyword })
         .where("program.status")
         .ne("Implemented")
         .limit(pageSize)
@@ -78,9 +104,49 @@ const listJobs = AsyncHandler(async (req, res) => {
 */
 const implementedJobs = AsyncHandler(async (req, res) => {
   const pageSize = 5
+  const keyword = req.query.keyword
+    ? {
+        customer: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {}
   const page = Number(req.query.pageNumber) || 1
-  const count = await Job.countDocuments({ "program.status": "Implemented" })
-  const jobs = await Job.find({ "program.status": "Implemented" })
+
+  const count = await Job.countDocuments({
+    "program.status": "Implemented",
+    ...keyword,
+  })
+  const jobs = await Job.find({ "program.status": "Implemented", ...keyword })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1))
+
+  res.json({ jobs, page, pages: Math.ceil(count / pageSize) })
+})
+
+/*  @desc   List all Implemented Jobs
+    @route  GET /api/jobs/all
+    @access Private/Support
+*/
+const getAllJobs = AsyncHandler(async (req, res) => {
+  const pageSize = 5
+  const keyword = req.query.keyword
+    ? {
+        customer: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {}
+  const page = Number(req.query.pageNumber) || 1
+
+  const count = await Job.countDocuments({ ...keyword })
+    .where("program.status")
+    .ne("Implemented")
+  const jobs = await Job.find({ ...keyword })
+    .where("program.status")
+    .ne("Implemented")
     .limit(pageSize)
     .skip(pageSize * (page - 1))
 
@@ -194,6 +260,7 @@ export {
   listJobs,
   detailsJob,
   implementedJobs,
+  getAllJobs,
   updateJobStatus,
   updateJob,
   deleteJob,
