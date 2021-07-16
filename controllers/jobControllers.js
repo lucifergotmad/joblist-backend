@@ -74,7 +74,7 @@ const listJobs = AsyncHandler(async (req, res) => {
         ...keyword,
       })
       jobs = await Job.find({
-        $or: [{ "program.status": "WIP" }, { "program.status": "RQC" }],
+        $or: [{ "program.status": "RQC" }, { "program.status": "RTI" }],
         ...keyword,
       })
         .limit(pageSize)

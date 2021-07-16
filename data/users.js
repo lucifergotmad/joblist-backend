@@ -11,7 +11,7 @@ const users = [
   {
     fullname: "Octyo Paswa Putra",
     role: "Programmer",
-    username: "lucifer",
+    username: "putra",
     password: bcrypt.hashSync("binary1010", 10),
     email: "octyo@example.com",
   },
